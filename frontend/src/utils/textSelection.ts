@@ -122,7 +122,8 @@ export const mergeFormattingRanges = (ranges: TextRange[]): TextRange[] => {
     // If ranges overlap or are adjacent, merge them
     if (range.start <= last.end) {
       last.end = Math.max(last.end, range.end);
-      last.styles = [...new Set([...last.styles, ...range.styles])];
+      const uniqueStyles = Array.from(new Set([...last.styles, ...range.styles]));
+      last.styles = uniqueStyles;
     } else {
       merged.push(range);
     }
