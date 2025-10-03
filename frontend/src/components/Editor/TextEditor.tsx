@@ -25,23 +25,6 @@ const TextEditor: React.FC = () => {
 
   const [isValidating, setIsValidating] = useState(false);
 
-  // Update character count when content changes
-  useEffect(() => {
-    const count = getCharacterCount(content);
-    setCharacterCount(count);
-  }, [content, setCharacterCount]);
-
-  // Auto-format content when it changes
-  useEffect(() => {
-    if (content.trim()) {
-      handleFormat();
-    } else {
-      setFormattedContent('');
-      setWarnings([]);
-      setSuggestions([]);
-    }
-  }, [content, handleFormat, setFormattedContent, setWarnings, setSuggestions]);
-
   const handleFormat = useCallback(async () => {
     if (!content.trim()) return;
 
@@ -61,6 +44,23 @@ const TextEditor: React.FC = () => {
       setIsFormatting(false);
     }
   }, [content, setIsFormatting, setFormattedContent, setWarnings]);
+
+  // Update character count when content changes
+  useEffect(() => {
+    const count = getCharacterCount(content);
+    setCharacterCount(count);
+  }, [content, setCharacterCount]);
+
+  // Auto-format content when it changes
+  useEffect(() => {
+    if (content.trim()) {
+      handleFormat();
+    } else {
+      setFormattedContent('');
+      setWarnings([]);
+      setSuggestions([]);
+    }
+  }, [content, handleFormat, setFormattedContent, setWarnings, setSuggestions]);
 
   const handleValidate = async () => {
     if (!content.trim()) return;
