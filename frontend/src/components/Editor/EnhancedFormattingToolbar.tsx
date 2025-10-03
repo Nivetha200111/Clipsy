@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bold, Italic, Underline, Type, Hash, List, Smile, Link, RotateCcw } from 'lucide-react';
+import { Bold, Italic, Underline, Hash, List, Smile, Link, RotateCcw } from 'lucide-react';
 
 interface EnhancedFormattingToolbarProps {
   onFormatText: (style: string) => void;

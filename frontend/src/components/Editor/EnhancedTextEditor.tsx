@@ -48,7 +48,7 @@ const EnhancedTextEditor: React.FC = () => {
       setWarnings([]);
       setSuggestions([]);
     }
-  }, [content]);
+  }, [content, handleFormat, setFormattedContent, setWarnings, setSuggestions]);
 
   // Check for text selection
   useEffect(() => {
