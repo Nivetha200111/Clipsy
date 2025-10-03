@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleTemplates }) => {
           <div className="flex items-center space-x-2">
             <Linkedin className="h-8 w-8 text-linkedin-blue" />
             <h1 className="text-xl font-bold text-gray-900">
-              LinkedIn Content Formatter
+              Clipsy
             </h1>
           </div>
         </div>

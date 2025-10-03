@@ -1,4 +1,4 @@
-# LinkedIn Content Formatter Tool
+# Clipsy - LinkedIn Content Formatter Tool
 
 A web application that helps users create and format LinkedIn-friendly content with perfect display, fonts, and alignment when pasted into LinkedIn.
 

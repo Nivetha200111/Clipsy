@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import formatter, templates
 
 app = FastAPI(
-    title="LinkedIn Content Formatter API",
+    title="Clipsy API",
     description="API for formatting content to be LinkedIn-compatible",
     version="1.0.0"
 )
@@ -23,7 +23,7 @@ app.include_router(templates.router, prefix="/api", tags=["templates"])
 
 @app.get("/")
 async def root():
-    return {"message": "LinkedIn Content Formatter API"}
+    return {"message": "Clipsy API"}
 
 @app.get("/health")
 async def health_check():
