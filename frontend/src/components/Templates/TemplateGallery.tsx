@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { X, Plus, Search, Filter } from 'lucide-react';
 import { getTemplates, Template } from '../../services/api';
 import { useContent } from '../../context/ContentContext';
@@ -31,7 +31,7 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({ onClose }) => {
 
   useEffect(() => {
     filterTemplates();
-  }, [templates, searchQuery, selectedCategory]);
+  }, [filterTemplates]);
 
   const loadTemplates = async () => {
     try {
@@ -46,7 +46,7 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({ onClose }) => {
     }
   };
 
-  const filterTemplates = () => {
+  const filterTemplates = useCallback(() => {
     let filtered = templates;
 
     // Filter by category
@@ -65,7 +65,7 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({ onClose }) => {
     }
 
     setFilteredTemplates(filtered);
-  };
+  }, [templates, selectedCategory, searchQuery]);
 
   const handleTemplateSelect = (template: Template) => {
     setContent(template.content);

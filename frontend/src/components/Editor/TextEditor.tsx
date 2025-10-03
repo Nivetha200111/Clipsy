@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useContent } from '../../context/ContentContext';
 import { formatContent, validateContent } from '../../services/api';
-import { getCharacterCount, getCharacterCountColor, formatCharacterCount } from '../../utils/formatting';
+import { getCharacterCount } from '../../utils/formatting';
 import FormattingToolbar from './FormattingToolbar';
 import CharacterCounter from './CharacterCounter';
 import CopyButton from '../CopyButton';
@@ -40,9 +40,9 @@ const TextEditor: React.FC = () => {
       setWarnings([]);
       setSuggestions([]);
     }
-  }, [content]);
+  }, [content, handleFormat, setFormattedContent, setWarnings, setSuggestions]);
 
-  const handleFormat = async () => {
+  const handleFormat = useCallback(async () => {
     if (!content.trim()) return;
 
     setIsFormatting(true);
@@ -60,7 +60,7 @@ const TextEditor: React.FC = () => {
     } finally {
       setIsFormatting(false);
     }
-  };
+  }, [content, setIsFormatting, setFormattedContent, setWarnings]);
 
   const handleValidate = async () => {
     if (!content.trim()) return;

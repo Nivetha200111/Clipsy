@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Calendar, Tag } from 'lucide-react';
+import { FileText, Calendar } from 'lucide-react';
 import { Template } from '../../services/api';
 
 interface TemplateCardProps {
