@@ -15,7 +15,6 @@ const TextEditor: React.FC = () => {
     setFormattedContent,
     isFormatting,
     setIsFormatting,
-    characterCount,
     setCharacterCount,
     warnings,
     setWarnings,
