@@ -25,27 +25,6 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({ onClose }) => {
     { id: 'professional', name: 'Professional' }
   ];
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  useEffect(() => {
-    filterTemplates();
-  }, [filterTemplates]);
-
-  const loadTemplates = async () => {
-    try {
-      setLoading(true);
-      const data = await getTemplates();
-      setTemplates(data);
-    } catch (error) {
-      console.error('Failed to load templates:', error);
-      toast.error('Failed to load templates');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filterTemplates = useCallback(() => {
     let filtered = templates;
 
@@ -66,6 +45,27 @@ const TemplateGallery: React.FC<TemplateGalleryProps> = ({ onClose }) => {
 
     setFilteredTemplates(filtered);
   }, [templates, selectedCategory, searchQuery]);
+
+  const loadTemplates = async () => {
+    try {
+      setLoading(true);
+      const data = await getTemplates();
+      setTemplates(data);
+    } catch (error) {
+      console.error('Failed to load templates:', error);
+      toast.error('Failed to load templates');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
+
+  useEffect(() => {
+    filterTemplates();
+  }, [filterTemplates]);
 
   const handleTemplateSelect = (template: Template) => {
     setContent(template.content);
