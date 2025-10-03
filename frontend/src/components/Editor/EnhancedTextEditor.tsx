@@ -33,6 +33,26 @@ const EnhancedTextEditor: React.FC = () => {
   const [hasSelection, setHasSelection] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const handleFormat = useCallback(async () => {
+    if (!content.trim()) return;
+
+    setIsFormatting(true);
+    try {
+      const response = await formatContent({
+        content,
+        preserve_formatting: true,
+      });
+
+      setFormattedContent(response.formatted_content);
+      setWarnings(response.warnings);
+    } catch (error) {
+      console.error('Formatting error:', error);
+      toast.error('Failed to format content');
+    } finally {
+      setIsFormatting(false);
+    }
+  }, [content, setIsFormatting, setFormattedContent, setWarnings]);
+
   // Update character count when content changes
   useEffect(() => {
     const count = getCharacterCount(content);
@@ -70,26 +90,6 @@ const EnhancedTextEditor: React.FC = () => {
       textarea.removeEventListener('keyup', handleSelectionChange);
     };
   }, []);
-
-  const handleFormat = useCallback(async () => {
-    if (!content.trim()) return;
-
-    setIsFormatting(true);
-    try {
-      const response = await formatContent({
-        content,
-        preserve_formatting: true,
-      });
-
-      setFormattedContent(response.formatted_content);
-      setWarnings(response.warnings);
-    } catch (error) {
-      console.error('Formatting error:', error);
-      toast.error('Failed to format content');
-    } finally {
-      setIsFormatting(false);
-    }
-  }, [content, setIsFormatting, setFormattedContent, setWarnings]);
 
   const handleValidate = async () => {
     if (!content.trim()) return;
