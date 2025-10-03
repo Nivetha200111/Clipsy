@@ -14,6 +14,15 @@ export interface FormatRequest {
   preserve_formatting?: boolean;
 }
 
+export interface AdvancedFormatRequest {
+  content: string;
+  ranges: Array<{
+    start: number;
+    end: number;
+    styles: string[];
+  }>;
+}
+
 export interface FormatResponse {
   formatted_content: string;
   character_count: number;
@@ -40,6 +49,11 @@ export interface Template {
 
 export const formatContent = async (request: FormatRequest): Promise<FormatResponse> => {
   const response = await api.post<FormatResponse>('/api/format', request);
+  return response.data;
+};
+
+export const formatContentAdvanced = async (request: AdvancedFormatRequest): Promise<FormatResponse> => {
+  const response = await api.post<FormatResponse>('/api/format-advanced', request);
   return response.data;
 };
 

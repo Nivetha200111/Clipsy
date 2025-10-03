@@ -6,7 +6,7 @@ class LinkedInFormatter:
     """Handles formatting content specifically for LinkedIn compatibility"""
     
     def __init__(self):
-        # Unicode character mappings for bold and italic
+        # Complete Unicode character mappings for bold, italic, and bold-italic
         self.bold_chars = {
             'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛',
             'I': '𝗜', 'J': '𝗝', 'K': '𝗞', 'L': '𝗟', 'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣',
@@ -15,7 +15,8 @@ class LinkedInFormatter:
             'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵',
             'i': '𝗶', 'j': '𝗷', 'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽',
             'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁', 'u': '𝘂', 'v': '𝘃', 'w': '𝘄', 'x': '𝘅',
-            'y': '𝘆', 'z': '𝘇'
+            'y': '𝘆', 'z': '𝘇',
+            '0': '𝟬', '1': '𝟭', '2': '𝟮', '3': '𝟯', '4': '𝟰', '5': '𝟱', '6': '𝟲', '7': '𝟳', '8': '𝟴', '9': '𝟵'
         }
         
         self.italic_chars = {
@@ -28,6 +29,20 @@ class LinkedInFormatter:
             'q': '𝘲', 'r': '𝘳', 's': '𝘴', 't': '𝘵', 'u': '𝘶', 'v': '𝘷', 'w': '𝘸', 'x': '𝘹',
             'y': '𝘺', 'z': '𝘻'
         }
+        
+        self.bold_italic_chars = {
+            'A': '𝘼', 'B': '𝘽', 'C': '𝘾', 'D': '𝘿', 'E': '𝙀', 'F': '𝙁', 'G': '𝙂', 'H': '𝙃',
+            'I': '𝙄', 'J': '𝙅', 'K': '𝙆', 'L': '𝙇', 'M': '𝙈', 'N': '𝙉', 'O': '𝙊', 'P': '𝙋',
+            'Q': '𝙌', 'R': '𝙍', 'S': '𝙎', 'T': '𝙏', 'U': '𝙐', 'V': '𝙑', 'W': '𝙒', 'X': '𝙓',
+            'Y': '𝙔', 'Z': '𝙕',
+            'a': '𝙖', 'b': '𝙗', 'c': '𝙘', 'd': '𝙙', 'e': '𝙚', 'f': '𝙛', 'g': '𝙜', 'h': '𝙝',
+            'i': '𝙞', 'j': '𝙟', 'k': '𝙠', 'l': '𝙡', 'm': '𝙢', 'n': '𝙣', 'o': '𝙤', 'p': '𝙥',
+            'q': '𝙦', 'r': '𝙧', 's': '𝙨', 't': '𝙩', 'u': '𝙪', 'v': '𝙫', 'w': '𝙬', 'x': '𝙭',
+            'y': '𝙮', 'z': '𝙯'
+        }
+        
+        # Underline combining character
+        self.underline_combining = '\u0332'
     
     def format_for_linkedin(self, content: str, preserve_formatting: bool = True) -> str:
         """
@@ -60,6 +75,52 @@ class LinkedInFormatter:
         formatted = self._final_cleanup(formatted)
         
         return formatted
+    
+    def format_with_ranges(self, content: str, ranges: list[dict]) -> str:
+        """
+        Format content with specific text ranges
+        
+        Args:
+            content: The original content
+            ranges: List of dictionaries with 'start', 'end', and 'styles' keys
+                   Example: [{'start': 0, 'end': 10, 'styles': ['bold']}]
+        
+        Returns:
+            Formatted content with Unicode characters
+        """
+        if not ranges:
+            return content
+        
+        result = list(content)
+        
+        # Sort ranges by start position (process from end to beginning to maintain indices)
+        sorted_ranges = sorted(ranges, key=lambda x: x['start'], reverse=True)
+        
+        for range_format in sorted_ranges:
+            start = range_format['start']
+            end = range_format['end']
+            styles = range_format.get('styles', [])
+            
+            if start >= len(result) or end > len(result) or start >= end:
+                continue
+                
+            text = ''.join(result[start:end])
+            
+            # Apply formatting based on styles
+            if 'bold' in styles and 'italic' in styles:
+                formatted = self._to_bold_italic(text)
+            elif 'bold' in styles:
+                formatted = self._to_bold(text)
+            elif 'italic' in styles:
+                formatted = self._to_italic(text)
+            elif 'underline' in styles:
+                formatted = self._to_underline(text)
+            else:
+                formatted = text
+                
+            result[start:end] = list(formatted)
+        
+        return ''.join(result)
     
     def _clean_content(self, content: str) -> str:
         """Remove problematic characters and normalize content"""
@@ -108,6 +169,14 @@ class LinkedInFormatter:
     def _to_italic(self, text: str) -> str:
         """Convert text to Unicode italic characters"""
         return ''.join(self.italic_chars.get(char, char) for char in text)
+    
+    def _to_bold_italic(self, text: str) -> str:
+        """Convert text to Unicode bold italic characters"""
+        return ''.join(self.bold_italic_chars.get(char, char) for char in text)
+    
+    def _to_underline(self, text: str) -> str:
+        """Convert text to underlined using combining characters"""
+        return ''.join(char + self.underline_combining for char in text)
     
     def _handle_line_breaks(self, content: str) -> str:
         """Handle line breaks properly for LinkedIn"""

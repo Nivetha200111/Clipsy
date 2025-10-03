@@ -14,6 +14,8 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == '/api/format':
             self.handle_format()
+        elif self.path == '/api/format-advanced':
+            self.handle_format_advanced()
         elif self.path == '/api/validate':
             self.handle_validate()
         else:
@@ -40,6 +42,44 @@ class handler(BaseHTTPRequestHandler):
             formatted_content = formatter.format_for_linkedin(
                 data['content'], 
                 preserve_formatting=data.get('preserve_formatting', True)
+            )
+            
+            # Validate the formatted content
+            validator = ContentValidator()
+            validation_result = validator.validate_content(formatted_content)
+            
+            response = {
+                'formatted_content': formatted_content,
+                'character_count': len(formatted_content),
+                'warnings': validation_result.get('warnings', [])
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode())
+            
+        except Exception as e:
+            self.send_error(500, str(e))
+    
+    def handle_format_advanced(self):
+        try:
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
+            
+            if 'content' not in data:
+                self.send_error(400, "Content is required")
+                return
+            
+            # Format the content with ranges
+            formatter = LinkedInFormatter()
+            formatted_content = formatter.format_with_ranges(
+                data['content'], 
+                data.get('ranges', [])
             )
             
             # Validate the formatted content

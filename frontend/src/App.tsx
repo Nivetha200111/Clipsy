@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/Header';
-import Editor from './components/Editor/TextEditor';
+import Editor from './components/Editor/EnhancedTextEditor';
 import Preview from './components/Preview/LinkedInPreview';
 import Templates from './components/Templates/TemplateGallery';
 import { ContentProvider } from './context/ContentContext';

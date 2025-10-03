@@ -9,6 +9,10 @@ class FormatRequest(BaseModel):
     content: str
     preserve_formatting: bool = True
 
+class AdvancedFormatRequest(BaseModel):
+    content: str
+    ranges: list[dict] = []  # List of formatting ranges with start, end, and styles
+
 class FormatResponse(BaseModel):
     formatted_content: str
     character_count: int
@@ -33,6 +37,24 @@ async def format_content(request: FormatRequest):
         request.content, 
         preserve_formatting=request.preserve_formatting
     )
+    
+    # Validate the formatted content
+    validation_result = validator.validate_content(formatted_content)
+    
+    return FormatResponse(
+        formatted_content=formatted_content,
+        character_count=len(formatted_content),
+        warnings=validation_result.get("warnings", [])
+    )
+
+@router.post("/format-advanced", response_model=FormatResponse)
+async def format_content_advanced(request: AdvancedFormatRequest):
+    """Format content with specific text ranges for LinkedIn compatibility"""
+    formatter = LinkedInFormatter()
+    validator = ContentValidator()
+    
+    # Format the content with specific ranges
+    formatted_content = formatter.format_with_ranges(request.content, request.ranges)
     
     # Validate the formatted content
     validation_result = validator.validate_content(formatted_content)
